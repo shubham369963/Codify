@@ -1,16 +1,31 @@
-import React from 'react';
+import {React, useEffect, useState} from 'react';
 import MainScreen from '../../components/MainScreen.js';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
-import notes from '../../data/notes.js';
 import Accordion from 'react-bootstrap/Accordion';
+import axios from "axios";
+
 
 const MyCodes = () => {
+
+  const [codes, setCodes] = useState([]);
+
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure ??')) {
     }
   };
+
+  const fetchCodes = async()=>{
+    const {data} = await axios.get("/api/codes");
+    setCodes(data);
+  }
+
+  console.log(codes);
+
+  useEffect(() => {
+    fetchCodes();
+  }, [])
 
   return (
     <MainScreen title="Welcome Back Shubham Halade..">
@@ -20,8 +35,8 @@ const MyCodes = () => {
         </Button>
       </Link>
 
-      {notes.map((note) => (
-        <Accordion>
+      {codes.map((code) => (
+        <Accordion key={code._id}>
           <Accordion.Item eventKey="0" style={{ margin: 10 }}>
             <Accordion.Header
               style={{
@@ -40,20 +55,20 @@ const MyCodes = () => {
                   fontSize: 20,
                 }}
               >
-                {note.title}
+                {code.title}
               </span>
               <div>
                 <Button
                   variant="success"
                   className="mx-2"
-                  href={`/note/${note._id}`}
+                  href={`/code/${code._id}`}
                 >
                   Edit
                 </Button>
                 <Button
                   variant="danger"
                   className="mx-2"
-                  onClick={() => deleteHandler(note._id)}
+                  onClick={() => deleteHandler(code._id)}
                 >
                   Delete
                 </Button>
@@ -61,10 +76,10 @@ const MyCodes = () => {
             </Accordion.Header>
             <Accordion.Body>
               <h4>
-                <Badge bg="dark">Category - {note.category}</Badge>
+                <Badge bg="dark">Category - {code.category}</Badge>
               </h4>
               <blockquote className="blockquote mb-0">
-                <p>{note.content}</p>
+                <p>{code.content}</p>
                 <footer className="blockquote-footer">Created On date</footer>
               </blockquote>
             </Accordion.Body>
