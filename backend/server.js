@@ -4,7 +4,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const port = process.env.PORT || 5000;
 const codes = require("./data/codes.js");
+const connectDB = require("./config/db.js");
 
+connectDB();
 
 app.get("/", (req, res)=>{
     res.send("app running");
