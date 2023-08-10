@@ -1,10 +1,19 @@
-import React from 'react'
+import {React} from 'react'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import "./LandingPage.css";
 
 const LandingPage = () => {
+
+    // useEffect(() => {
+    //     const userInfo = localStorage.getItem("userInfo");
+      
+    //     if(userInfo){
+    //       history.push("/mycodes");
+    //     }
+    //     }, [history]);
+
   return (
     <div className="main">
         <Container>
