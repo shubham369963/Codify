@@ -5,10 +5,23 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import {Link , useNavigate } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {logout} from "../../actions/userActions.js";
 import "./Header.css";
 const Header = () => {
 
   const Navigate = useNavigate ();
+
+  const dispatch = useDispatch();
+  const userLogin = useSelector((state) => state.userLogin);
+  const {userInfo} = userLogin;
+
+  const logoutHandler = () =>{
+    dispatch(logout());
+
+    Navigate("/");
+  }
+  
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
@@ -35,10 +48,7 @@ const Header = () => {
             <NavDropdown title="Shubham Halade" id="navbarScrollingDropdown">
               <NavDropdown.Item href="#action3">Profile</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item onClick={() => {
-                localStorage.removeItem("userInfo");
-                Navigate("/");
-              }}>
+              <NavDropdown.Item onClick={logoutHandler}>
                 Logout
               </NavDropdown.Item>
             </NavDropdown>
