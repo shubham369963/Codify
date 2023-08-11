@@ -11,7 +11,7 @@ import ErrorMessage from "../../components/ErrorMessage.js";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../actions/userActions.js";
 
-const LoginPage = ({history}) => {
+const LoginPage = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,7 +26,7 @@ const LoginPage = ({history}) => {
   if(userInfo){
     navigate("/mycodes")
   }
-  }, [history, userInfo]);
+  }, [navigate, userInfo]);
 
 
   const submitHandler = async (e) =>{

@@ -8,7 +8,7 @@ import "./RegisterPage.css";
 import { useDispatch, useSelector } from "react-redux";
 import { register } from "../../actions/userActions.js";
 
-const RegisterPage =({history}) =>{
+const RegisterPage =() =>{
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -28,7 +28,7 @@ const RegisterPage =({history}) =>{
     if (userInfo) {
       navigate("/mycodes");
     }
-  }, [history, userInfo]);
+  }, [navigate, userInfo]);
 
   const submitHandler = (e) => {
     e.preventDefault();
