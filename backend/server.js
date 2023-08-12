@@ -8,13 +8,10 @@ const connectDB = require("./config/db.js");
 const userRoutes = require("./routes/userRoutes.js");
 const codeRoutes = require("./routes/codeRoutes.js");
 const {notFound, errorHandler} = require("./middlewares/errorMiddleware.js");
+const path = require("path");
 
 connectDB();
 app.use(express.json());
-
-app.get("/", (req, res)=>{
-    res.send("app running");
-});
 
 // app.get("/api/codes", (req, res)=>{
 //     res.json(codes);
@@ -28,6 +25,26 @@ app.get("/", (req, res)=>{
 app.use("/api/users", userRoutes);
 app.use("/api/codes", codeRoutes);
 
+//----------------------------------------------------Deployment----------------------------------------------------
+
+
+const __dirnm = path.resolve();
+
+if(process.env.NODE_ENV === "production"){
+
+    app.use(express.static(path.join(__dirnm, "/frontend/build")));
+
+    app.get("*", (req, res)=>{
+        res.sendFile(path.resolve(__dirnm, "frontend", "build", "index.html"));
+    });
+
+}else{
+    app.get("/", (req, res)=>{
+        res.send("app running");
+    });
+}
+
+//----------------------------------------------------Deployment----------------------------------------------------
 
 app.use(notFound);
 app.use(errorHandler);
