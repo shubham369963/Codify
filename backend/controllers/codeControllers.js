@@ -68,7 +68,7 @@ const deleteCode = asyncHandler(async (req, res) =>{
     }
 
     if(code){
-        await code.remove();
+        await code.deleteOne();
         res.json({message: "Code Removed"});
     }else{
         res.status(404);

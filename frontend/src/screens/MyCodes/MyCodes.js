@@ -1,41 +1,64 @@
-import {React, useEffect, useState} from 'react';
+import {React, useEffect} from 'react';
 import MainScreen from '../../components/MainScreen.js';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
 import Accordion from 'react-bootstrap/Accordion';
-import axios from "axios";
+import Loading from "../../components/Loading.js";
+import ErrorMessage from "../../components/ErrorMessage.js";
+import {useDispatch, useSelector} from "react-redux";
+import {listCodes, deleteCodeAction} from "../../actions/codeActions.js"
 
+const MyCodes = ({search}) => {
 
-const MyCodes = () => {
+  const dispatch = useDispatch();
 
-  const [codes, setCodes] = useState([]);
+  const codeList = useSelector((state) => state.codeList);
+  const { loading, error , codes } = codeList;
+
+  const userLogin = useSelector((state)=> state.userLogin);
+  const {userInfo} = userLogin;
+
+  const codeCreate = useSelector((state) => state.codeCreate);
+  const { success: successCreate } = codeCreate;
+
+  const codeUpdate = useSelector((state) => state.codeUpdate);
+  const { success: successUpdate } = codeUpdate;
+
+  const codeDelete = useSelector((state) => state.codeDelete);
+  const { loading: loadingDelete, error: errorDelete, success: successDelete } = codeDelete;
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure ??')) {
+      dispatch(deleteCodeAction(id))
     }
   };
 
-  const fetchCodes = async()=>{
-    const {data} = await axios.get("/api/codes");
-    setCodes(data);
-  }
-
-  console.log(codes);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCodes();
-  }, [])
+    dispatch(listCodes());
+    if(!userInfo){
+      navigate("/");
+    }
+  }, [dispatch, successCreate,navigate, userInfo, successUpdate,successDelete]);
 
   return (
-    <MainScreen title="Welcome Back Shubham Halade..">
-      <Link to="createcode">
+    <MainScreen title={`Welcome Back ${userInfo.name}..`}>
+      <Link to="/createcode">
         <Button style={{ marginLeft: 10, marginBottom: 6 }} size="lg">
           Create New Repository
         </Button>
       </Link>
-
-      {codes.map((code) => (
+      {errorDelete && (
+        <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>
+      )}
+      {loadingDelete && <Loading /> }
+      {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
+      {loading && <Loading/>}
+      {codes?.reverse().filter((filteredCode) => (
+        filteredCode.title.toLowerCase().includes(search.toLowerCase())
+      )).map((code) => (
         <Accordion key={code._id}>
           <Accordion.Item eventKey="0" style={{ margin: 10 }}>
             <Accordion.Header
@@ -75,13 +98,17 @@ const MyCodes = () => {
               </div>
             </Accordion.Header>
             <Accordion.Body>
-              <h4>
+              <h6>
                 <Badge bg="dark">Category - {code.category}</Badge>
-              </h4>
-              <blockquote className="blockquote mb-0">
-                <p>{code.content}</p>
-                <footer className="blockquote-footer">Created On date</footer>
-              </blockquote>
+              </h6>
+              <code className="blockquote mb-0">
+                <pre style={{fontSize: "15px", lineHeight: "12px"}}>{code.content}</pre>
+                <footer className="blockquote-footer">Created On{" "}
+                <cite className="Source Title">
+                  {code.createdAt.substring(0, 10)}
+                </cite>
+                </footer>
+              </code>
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
