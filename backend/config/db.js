@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-mongoose.set('strictQuery', false);
-mongoose.set('bufferCommands', false);
+
 const connectDB = async()=>{
     try{
-        console.log(process.env.MONGO_URI);
-        const conn = await mongoose.connect(process.env.MONGO_URI, {
+        const key = process.env.MONGO_URI;
+        console.log(key);
+        const conn = await mongoose.connect( key , {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
